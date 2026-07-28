@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Dil Değişimi</title>
+<meta name="description" content="Dil pratiği yapmak için sohbet ve oyun uygulaması" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="theme-color" content="#2A46D6" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #FBF3E4; }
+  body { -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+  button { font-family: inherit; }
+</style>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+
+// ---------- Design tokens ----------
+const COLORS = {
+  cream: "#FBF3E4",
+  card: "#FFFFFF",
+  ink: "#182449",
+  inkSoft: "#5B6180",
+  cobalt: "#2A46D6",
+  cobaltDeep: "#1B32A6",
+  amber: "#F5A83C",
+  amberDeep: "#E8901A",
+  green: "#3FAE6B",
+  line: "#EFE6D4",
+};
+
+// ---------- Inline icon set (no external deps) ----------
+const Icon = ({ children, size = 18, color = "currentColor", fill = "none", viewBox = "0 0 24 24" }) => (
+  <svg width={size} height={size} viewBox={viewBox} fill={fill} stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+const HomeIcon = (p) => <Icon {...p}><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></Icon>;
+const Gamepad2 = (p) => <Icon {...p}><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="11" r="1"/><rect x="2" y="6" width="20" height="12" rx="4"/></Icon>;
+const MessageCircle = (p) => <Icon {...p}><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 21l1.5-5.5A8.5 8.5 0 1 1 21 12Z"/></Icon>;
+const Search = (p) => <Icon {...p}><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></Icon>;
+const Video = (p) => <Icon {...p}><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></Icon>;
+const Mic = (p) => <Icon {...p}><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></Icon>;
+const MessageSquare = (p) => <Icon {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></Icon>;
+const Star = (p) => <Icon {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>;
+const ChevronDown = (p) => <Icon {...p}><polyline points="6 9 12 15 18 9"/></Icon>;
+const ArrowRight = (p) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Icon>;
+const Play = (p) => <Icon {...p}><polygon points="5 3 19 12 5 21 5 3"/></Icon>;
+const ExternalLink = (p) => <Icon {...p}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></Icon>;
+const PhoneMissed = (p) => <Icon {...p}><polyline points="23 1 17 1 17 7"/><line x1="16" y1="8" x2="23" y2="1"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></Icon>;
+const Zap = (p) => <Icon {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Icon>;
+
+const partners = [
+  { name: "Sofia", flag: "🇲🇽" },
+  { name: "Diego", flag: "🇦🇷" },
+  { name: "Lucia", flag: "🇪🇸" },
+  { name: "Mateo", flag: "🇨🇴" },
+];
+
+const conversations = [
+  { name: "Sofia", flag: "🇲🇽", time: "2m ago", preview: "\u201c¿Cómo se dice homesick?\u201d", badge: 2, starred: false, missed: false },
+  { name: "Diego", flag: "🇦🇷", time: "1h ago", preview: "Voice call missed", badge: 0, starred: false, missed: true },
+  { name: "Lucia", flag: "🇪🇸", time: "Yesterday", preview: "\u201cGreat session today!\u201d", badge: 0, starred: true, missed: false },
+  { name: "Kenji", flag: "🇯🇵", time: "2d ago", preview: "\u201cLet's play Story Chain again\u201d", badge: 0, starred: false, missed: false },
+];
+
+const games = [
+  { title: "Word Race", difficulty: "MEDIUM", diffColor: COLORS.amber, rating: 4.9, online: "2,340 online", accent: COLORS.cobalt },
+  { title: "Picture Charades", difficulty: "EASY", diffColor: COLORS.green, rating: 4.7, online: "890 online", accent: COLORS.green },
+];
+
+const filters = ["All", "Vocabulary", "Speaking", "Listening"];
+const chatFilters = ["All", "Video", "Text", "Favorites"];
+
+function Avatar({ flag, size = 48 }) {
+  return (
+    <div style={{ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg, #DCEAFE 0%, #F7E7C6 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.45, flexShrink: 0, border: `2px solid ${COLORS.card}`, boxShadow: "0 0 0 1px " + COLORS.line }}>
+      {flag}
+    </div>
+  );
+}
+
+function TopBar({ title, subtitle }) {
+  return (
+    <div style={{ padding: "22px 20px 4px" }}>
+      {subtitle && <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: 0.3, color: COLORS.inkSoft, marginBottom: 2 }}>{subtitle}</div>}
+      {title && <div style={{ fontSize: 30, fontWeight: 800, color: COLORS.ink, letterSpacing: -0.5 }}>{title}</div>}
+    </div>
+  );
+}
+
+function Pill({ active, children, onClick, activeColor = COLORS.cobalt }) {
+  return (
+    <button onClick={onClick} style={{ padding: "9px 16px", borderRadius: 999, border: "none", fontSize: 13.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", background: active ? activeColor : COLORS.card, color: active ? "#fff" : COLORS.inkSoft, boxShadow: active ? `0 4px 10px ${activeColor}55` : "0 1px 2px rgba(24,36,73,0.06)", transition: "all .15s ease" }}>
+      {children}
+    </button>
+  );
+}
+
+function HomeScreen() {
+  const [mode, setMode] = useState("Video");
+  return (
+    <div>
+      <div style={{ padding: "20px 20px 0" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: COLORS.card, borderRadius: 999, padding: "8px 14px 8px 8px", boxShadow: "0 1px 3px rgba(24,36,73,0.08)" }}>
+          <span style={{ width: 26, height: 26, borderRadius: "50%", background: COLORS.cobalt, color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>EN</span>
+          <span style={{ fontWeight: 700, fontSize: 14, color: COLORS.ink }}>English</span>
+          <ArrowRight size={14} color={COLORS.inkSoft} />
+          <span style={{ width: 26, height: 26, borderRadius: "50%", background: COLORS.amber, color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>ES</span>
+          <ChevronDown size={16} color={COLORS.inkSoft} />
+        </div>
+      </div>
+
+      <div style={{ padding: "16px 20px 0" }}>
+        <div style={{ borderRadius: 22, padding: "22px 18px", background: "linear-gradient(120deg, #EAF1FF 0%, #FBF3E4 55%, #FDEBD2 100%)", position: "relative", overflow: "hidden", border: `1px solid ${COLORS.line}` }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+            <svg width="150" height="150" viewBox="0 0 150 150">
+              <circle cx="75" cy="75" r="64" fill="none" stroke="#E4DCC9" strokeWidth="12" />
+              <circle cx="75" cy="75" r="64" fill="none" stroke={COLORS.cobalt} strokeWidth="12" strokeDasharray={2 * Math.PI * 64} strokeDashoffset={2 * Math.PI * 64 * (1 - 13 / 20)} strokeLinecap="round" transform="rotate(-90 75 75)" />
+            </svg>
+            <div style={{ position: "absolute", textAlign: "center" }}>
+              <div style={{ fontSize: 30, fontWeight: 800, color: COLORS.ink, lineHeight: 1 }}>13/20</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.inkSoft, marginTop: 4 }}>min today</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, background: COLORS.card, padding: "7px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 600, color: COLORS.inkSoft, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
+          <span style={{ width: 7, height: 7, borderRadius: "50%", background: COLORS.green, display: "inline-block" }} />
+          1,284 learners live now
+        </div>
+      </div>
+
+      <div style={{ padding: "16px 20px 0" }}>
+        <button style={{ width: "100%", border: "none", borderRadius: 18, padding: "16px 18px", background: `linear-gradient(135deg, ${COLORS.amber}, ${COLORS.amberDeep})`, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", boxShadow: `0 8px 18px ${COLORS.amber}55` }}>
+          <span style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.9)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Zap size={20} color={COLORS.amberDeep} fill={COLORS.amberDeep} />
+          </span>
+          <span style={{ textAlign: "left", flex: 1 }}>
+            <div style={{ fontWeight: 800, fontSize: 17, color: "#fff" }}>Match Now</div>
+            <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>Find a partner in Spanish</div>
+          </span>
+          <ArrowRight size={20} color="#fff" />
+        </button>
+      </div>
+
+      <div style={{ padding: "14px 20px 0" }}>
+        <div style={{ display: "flex", background: COLORS.card, borderRadius: 14, padding: 4, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
+          {[{ key: "Video", icon: Video }, { key: "Voice", icon: Mic }, { key: "Text", icon: MessageSquare }].map(({ key, icon: Icon2 }) => (
+            <button key={key} onClick={() => setMode(key)} style={{ flex: 1, border: "none", borderRadius: 10, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontWeight: 700, fontSize: 13.5, cursor: "pointer", background: mode === key ? COLORS.cream : "transparent", color: mode === key ? COLORS.ink : COLORS.inkSoft }}>
+              <Icon2 size={15} /> {key}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ padding: "22px 20px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <span style={{ fontWeight: 800, fontSize: 16, color: COLORS.ink }}>Recent Partners</span>
+          <span style={{ fontWeight: 700, fontSize: 13, color: COLORS.cobalt }}>See all</span>
+        </div>
+        <div style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 4 }}>
+          {partners.map((p) => (
+            <div key={p.name} style={{ textAlign: "center", flexShrink: 0 }}>
+              <Avatar flag={p.flag} />
+              <div style={{ fontSize: 11.5, fontWeight: 700, color: COLORS.ink, marginTop: 6 }}>{p.name}</div>
+            </div>
+          ))}
+          <div style={{ textAlign: "center", flexShrink: 0 }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", border: `2px dashed ${COLORS.cobalt}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>👋</div>
+            <div style={{ fontSize: 11.5, fontWeight: 700, color: COLORS.cobalt, marginTop: 6 }}>Say hi</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ padding: "22px 20px 120px" }}>
+        <div style={{ fontWeight: 800, fontSize: 16, color: COLORS.ink, marginBottom: 12 }}>Suggested for you</div>
+        <div style={{ display: "flex", gap: 12 }}>
+          <div style={{ flex: 1, background: COLORS.card, borderRadius: 16, padding: 14, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
+            <span style={{ fontSize: 10, fontWeight: 800, background: "#E7F6EC", color: COLORS.green, padding: "3px 8px", borderRadius: 999 }}>POPULAR</span>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginTop: 10 }}>Quick & playful session</div>
+          </div>
+          <div style={{ flex: 1, background: COLORS.card, borderRadius: 16, padding: 14, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
+            <span style={{ fontSize: 10, fontWeight: 800, background: "#EAF1FF", color: COLORS.cobalt, padding: "3px 8px", borderRadius: 999 }}>LIVE</span>
+            <div style={{ fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginTop: 10 }}>12 talking now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GamesScreen() {
+  const [filter, setFilter] = useState("All");
+  return (
+    <div>
+      <TopBar title="Games" />
+      <div style={{ padding: "14px 20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, background: COLORS.card, borderRadius: 14, padding: "12px 14px", boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
+          <Search size={17} color={COLORS.inkSoft} />
+          <span style={{ color: COLORS.inkSoft, fontSize: 14, fontWeight: 500 }}>Search games...</span>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 8, padding: "14px 20px 0", overflowX: "auto" }}>
+        {filters.map((f) => (
+          <Pill key={f} active={filter === f} onClick={() => setFilter(f)}>{f}</Pill>
+        ))}
+      </div>
+
+      <div style={{ padding: "16px 20px 0" }}>
+        <div style={{ borderRadius: 20, padding: 20, background: `linear-gradient(135deg, ${COLORS.cobalt}, ${COLORS.cobaltDeep})`, position: "relative", overflow: "hidden" }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <span style={{ background: COLORS.amber, color: "#fff", fontSize: 10.5, fontWeight: 800, padding: "4px 10px", borderRadius: 999 }}>THIS WEEKEND</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 600, color: "#DCE5FF" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8FE3B0", display: "inline-block" }} />
+              Live soon
+            </span>
+          </div>
+          <div style={{ fontWeight: 800, fontSize: 21, color: "#fff", marginTop: 10, lineHeight: 1.25 }}>Weekend Tournament:<br />Word Race</div>
+          <div style={{ fontSize: 13, color: "#C9D6FF", marginTop: 8, fontWeight: 500 }}>Win 500 XP · Starts Saturday at 7 PM</div>
+          <button style={{ marginTop: 16, background: "#fff", border: "none", borderRadius: 999, padding: "10px 18px", fontWeight: 700, fontSize: 13.5, color: COLORS.cobalt, display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
+            View tournament <ExternalLink size={13} />
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "22px 20px 12px" }}>
+        <span style={{ fontWeight: 800, fontSize: 18, color: COLORS.ink }}>Jump in</span>
+        <span style={{ fontSize: 13, color: COLORS.inkSoft, fontWeight: 600 }}>5 games</span>
+      </div>
+
+      <div style={{ padding: "0 20px 120px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        {games.map((g) => (
+          <div key={g.title} style={{ background: COLORS.card, borderRadius: 18, overflow: "hidden", borderLeft: `4px solid ${g.accent}`, boxShadow: "0 1px 4px rgba(24,36,73,0.07)" }}>
+            <div style={{ height: 90, background: "linear-gradient(135deg, #DCEAFE, #F4EAD0)", position: "relative" }}>
+              <span style={{ position: "absolute", top: 8, left: 8, background: "rgba(255,255,255,0.92)", fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 999, display: "flex", alignItems: "center", gap: 4, color: COLORS.ink }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: COLORS.green, display: "inline-block" }} />
+                {g.online}
+              </span>
+            </div>
+            <div style={{ padding: "12px 12px 14px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ fontWeight: 800, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.2 }}>{g.title}</div>
+                <span style={{ fontSize: 9.5, fontWeight: 800, color: "#fff", background: g.diffColor, padding: "3px 7px", borderRadius: 999, whiteSpace: "nowrap", marginLeft: 6 }}>{g.difficulty}</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
+                <Star size={12} fill={COLORS.amber} color={COLORS.amber} />
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>{g.rating}</span>
+              </div>
+              <button style={{ width: "100%", marginTop: 10, border: "none", borderRadius: 12, padding: "9px 0", background: COLORS.cobalt, color: "#fff", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
+                Play <Play size={12} fill="#fff" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChatsScreen() {
+  const [filter, setFilter] = useState("All");
+  return (
+    <div>
+      <TopBar subtitle="Your conversation corner" title="Chats" />
+
+      <div style={{ display: "flex", gap: 6, padding: "16px 20px 0" }}>
+        {chatFilters.map((f) => (
+          <button key={f} onClick={() => setFilter(f)} style={{ flex: f === "Favorites" ? "1.3" : 1, border: "none", borderRadius: 12, padding: "9px 6px", fontWeight: 700, fontSize: 12.5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4, background: filter === f ? COLORS.card : "transparent", color: filter === f ? COLORS.ink : COLORS.inkSoft, boxShadow: filter === f ? "0 1px 3px rgba(24,36,73,0.08)" : "none" }}>
+            {f === "Favorites" && <Star size={12} />} {f}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ padding: "14px 20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, background: COLORS.card, borderRadius: 14, padding: "12px 14px", boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
+          <Search size={17} color={COLORS.inkSoft} />
+          <span style={{ color: COLORS.inkSoft, fontSize: 14, fontWeight: 500 }}>Search conversations</span>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 20px 10px" }}>
+        <span style={{ fontWeight: 800, fontSize: 16, color: COLORS.ink }}>Recent conversations</span>
+        <span style={{ fontSize: 11.5, fontWeight: 700, color: COLORS.green, background: "#E7F6EC", padding: "3px 9px", borderRadius: 999 }}>4 active</span>
+      </div>
+
+      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 10 }}>
+        {conversations.map((c) => (
+          <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 12, background: COLORS.card, borderRadius: 16, padding: "12px 14px", boxShadow: c.name === "Sofia" ? `0 0 0 2px ${COLORS.cobalt}, 0 4px 10px rgba(42,70,214,0.15)` : "0 1px 3px rgba(24,36,73,0.06)" }}>
+            <Avatar flag={c.flag} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontWeight: 800, fontSize: 14.5, color: COLORS.ink }}>{c.name} {c.flag}</span>
+                <span style={{ fontSize: 11.5, color: COLORS.inkSoft, fontWeight: 600 }}>{c.time}</span>
+              </div>
+              <div style={{ fontSize: 13, color: c.missed ? "#D9534F" : COLORS.inkSoft, marginTop: 3, fontWeight: 500, display: "flex", alignItems: "center", gap: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {c.missed && <PhoneMissed size={12} />}
+                {c.preview}
+              </div>
+            </div>
+            {c.badge > 0 && (
+              <span style={{ minWidth: 22, height: 22, borderRadius: 11, background: COLORS.cobalt, color: "#fff", fontSize: 11.5, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{c.badge}</span>
+            )}
+            {c.starred && <Star size={16} color={COLORS.amber} fill={COLORS.amber} />}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ padding: "18px 20px 120px" }}>
+        <div style={{ borderRadius: 18, padding: "16px 16px", background: "linear-gradient(120deg, #E7F6EC 0%, #EAF1FF 100%)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <span style={{ fontWeight: 700, fontSize: 13.5, color: COLORS.ink }}>Keep the streak chatty</span>
+          <button style={{ border: "none", borderRadius: 999, padding: "8px 14px", background: COLORS.cobalt, color: "#fff", fontWeight: 800, fontSize: 12.5, display: "flex", alignItems: "center", gap: 5, cursor: "pointer", whiteSpace: "nowrap" }}>
+            <Zap size={13} fill="#fff" /> New Match
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [tab, setTab] = useState("Home");
+  const tabs = [
+    { key: "Home", icon: HomeIcon, screen: <HomeScreen /> },
+    { key: "Games", icon: Gamepad2, screen: <GamesScreen /> },
+    { key: "Chats", icon: MessageCircle, screen: <ChatsScreen /> },
+  ];
+  const current = tabs.find((t) => t.key === tab);
+
+  return (
+    <div style={{ minHeight: "100vh", background: COLORS.cream, display: "flex", justifyContent: "center", fontFamily: "'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif" }}>
+      <div style={{ width: "100%", maxWidth: 460, minHeight: "100vh", position: "relative", background: COLORS.cream }}>
+        {current.screen}
+        <div style={{ position: "fixed", bottom: 18, left: "50%", transform: "translateX(-50%)", width: "calc(100% - 40px)", maxWidth: 420, background: COLORS.card, borderRadius: 22, boxShadow: "0 10px 30px rgba(24,36,73,0.18)", display: "flex", padding: 8, gap: 6 }}>
+          {tabs.map(({ key, icon: TabIcon }) => {
+            const active = tab === key;
+            return (
+              <button key={key} onClick={() => setTab(key)} style={{ flex: 1, border: "none", background: active ? COLORS.cobalt : "transparent", borderRadius: 16, padding: "10px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, cursor: "pointer", transition: "all .15s ease" }}>
+                <TabIcon size={19} color={active ? "#fff" : COLORS.inkSoft} />
+                <span style={{ fontSize: 11, fontWeight: 700, color: active ? "#fff" : COLORS.inkSoft }}>{key}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
