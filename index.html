@@ -10,365 +10,444 @@
 <link rel="apple-touch-icon" href="icon-192.png" />
 <meta name="theme-color" content="#2A46D6" />
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #FBF3E4; }
-  body { -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
-  button { font-family: inherit; }
+:root{
+  --cream:#FBF3E4; --card:#FFFFFF; --ink:#182449; --inkSoft:#5B6180;
+  --cobalt:#2A46D6; --cobaltDeep:#1B32A6; --amber:#F5A83C; --amberDeep:#E8901A;
+  --green:#3FAE6B; --line:#EFE6D4;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--cream);}
+body{
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  overscroll-behavior:none;
+  color:var(--ink);
+}
+button{font-family:inherit;cursor:pointer;}
+.app{max-width:460px;margin:0 auto;min-height:100vh;position:relative;background:var(--cream);}
+.icon{display:inline-flex;vertical-align:middle;}
+.hidden{display:none !important;}
+
+/* Top pill (Home lang switcher) */
+.lang-pill{display:inline-flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:8px 14px 8px 8px;box-shadow:0 1px 3px rgba(24,36,73,.08);}
+.lang-badge{width:26px;height:26px;border-radius:50%;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+/* Progress card */
+.progress-card{border-radius:22px;padding:22px 18px;background:linear-gradient(120deg,#EAF1FF 0%,var(--cream) 55%,#FDEBD2 100%);border:1px solid var(--line);position:relative;overflow:hidden;}
+.ring-wrap{display:flex;align-items:center;justify-content:center;position:relative;}
+.ring-center{position:absolute;text-align:center;}
+.ring-num{font-size:30px;font-weight:800;line-height:1;}
+.ring-label{font-size:12px;font-weight:600;color:var(--inkSoft);margin-top:4px;}
+
+.live-pill{display:flex;align-items:center;gap:6px;background:var(--card);padding:7px 14px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--inkSoft);box-shadow:0 1px 3px rgba(24,36,73,.06);}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;}
+
+.match-btn{width:100%;border:none;border-radius:18px;padding:16px 18px;background:linear-gradient(135deg,var(--amber),var(--amberDeep));display:flex;align-items:center;gap:14px;box-shadow:0 8px 18px rgba(245,168,60,.35);}
+.match-icon-circle{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.match-text{text-align:left;flex:1;}
+.match-title{font-weight:800;font-size:17px;color:#fff;}
+.match-sub{font-size:12.5px;color:rgba(255,255,255,.9);font-weight:600;}
+
+.mode-toggle{display:flex;background:var(--card);border-radius:14px;padding:4px;box-shadow:0 1px 3px rgba(24,36,73,.06);}
+.mode-btn{flex:1;border:none;border-radius:10px;padding:9px 0;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:700;font-size:13.5px;background:transparent;color:var(--inkSoft);}
+.mode-btn.active{background:var(--cream);color:var(--ink);}
+
+.section-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.section-title{font-weight:800;font-size:16px;}
+.see-all{font-weight:700;font-size:13px;color:var(--cobalt);}
+
+.partners-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:4px;}
+.partner{text-align:center;flex-shrink:0;}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#DCEAFE 0%,#F7E7C6 100%);display:flex;align-items:center;justify-content:center;font-size:21.6px;flex-shrink:0;border:2px solid var(--card);box-shadow:0 0 0 1px var(--line);}
+.partner-name{font-size:11.5px;font-weight:700;margin-top:6px;}
+.say-hi-circle{width:48px;height:48px;border-radius:50%;border:2px dashed var(--cobalt);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.say-hi-label{font-size:11.5px;font-weight:700;color:var(--cobalt);margin-top:6px;}
+
+.suggested-row{display:flex;gap:12px;}
+.suggested-card{flex:1;background:var(--card);border-radius:16px;padding:14px;box-shadow:0 1px 3px rgba(24,36,73,.06);}
+.tag{font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px;display:inline-block;}
+.tag-green{background:#E7F6EC;color:var(--green);}
+.tag-blue{background:#EAF1FF;color:var(--cobalt);}
+.suggested-text{font-weight:700;font-size:13.5px;margin-top:10px;}
+
+/* Top bar (Games/Chats) */
+.topbar{padding:22px 20px 4px;}
+.topbar-sub{font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--inkSoft);margin-bottom:2px;}
+.topbar-title{font-size:30px;font-weight:800;letter-spacing:-.5px;}
+
+.search-box{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(24,36,73,.06);color:var(--inkSoft);font-size:14px;font-weight:500;}
+
+.pills-row{display:flex;gap:8px;overflow-x:auto;}
+.pill{padding:9px 16px;border-radius:999px;border:none;font-size:13.5px;font-weight:700;white-space:nowrap;background:var(--card);color:var(--inkSoft);box-shadow:0 1px 2px rgba(24,36,73,.06);}
+.pill.active{background:var(--cobalt);color:#fff;box-shadow:0 4px 10px rgba(42,70,214,.35);}
+
+.tourney-card{border-radius:20px;padding:20px;background:linear-gradient(135deg,var(--cobalt),var(--cobaltDeep));position:relative;overflow:hidden;}
+.tourney-badges{display:flex;gap:8px;align-items:center;}
+.badge-weekend{background:var(--amber);color:#fff;font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:999px;}
+.live-soon{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#DCE5FF;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#8FE3B0;display:inline-block;}
+.tourney-title{font-weight:800;font-size:21px;color:#fff;margin-top:10px;line-height:1.25;}
+.tourney-sub{font-size:13px;color:#C9D6FF;margin-top:8px;font-weight:500;}
+.tourney-btn{margin-top:16px;background:#fff;border:none;border-radius:999px;padding:10px 18px;font-weight:700;font-size:13.5px;color:var(--cobalt);display:inline-flex;align-items:center;gap:6px;}
+
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.game-card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 1px 4px rgba(24,36,73,.07);}
+.game-thumb{height:90px;background:linear-gradient(135deg,#DCEAFE,#F4EAD0);position:relative;}
+.online-tag{position:absolute;top:8px;left:8px;background:rgba(255,255,255,.92);font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;display:flex;align-items:center;gap:4px;}
+.game-body{padding:12px 12px 14px;}
+.game-head{display:flex;justify-content:space-between;align-items:flex-start;}
+.game-name{font-weight:800;font-size:14.5px;line-height:1.2;}
+.diff-tag{font-size:9.5px;font-weight:800;color:#fff;padding:3px 7px;border-radius:999px;white-space:nowrap;margin-left:6px;}
+.rating-row{display:flex;align-items:center;gap:4px;margin-top:6px;font-size:12.5px;font-weight:700;color:var(--inkSoft);}
+.play-btn{width:100%;margin-top:10px;border:none;border-radius:12px;padding:9px 0;background:var(--cobalt);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+/* Chats */
+.chat-filters{display:flex;gap:6px;}
+.chat-filter-btn{border:none;border-radius:12px;padding:9px 6px;font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:4px;background:transparent;color:var(--inkSoft);flex:1;}
+.chat-filter-btn.active{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(24,36,73,.08);}
+
+.active-badge{font-size:11.5px;font-weight:700;color:var(--green);background:#E7F6EC;padding:3px 9px;border-radius:999px;}
+
+.conv-item{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 1px 3px rgba(24,36,73,.06);}
+.conv-item.highlight{box-shadow:0 0 0 2px var(--cobalt),0 4px 10px rgba(42,70,214,.15);}
+.conv-main{flex:1;min-width:0;}
+.conv-top{display:flex;justify-content:space-between;}
+.conv-name{font-weight:800;font-size:14.5px;}
+.conv-time{font-size:11.5px;color:var(--inkSoft);font-weight:600;}
+.conv-preview{font-size:13px;color:var(--inkSoft);margin-top:3px;font-weight:500;display:flex;align-items:center;gap:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.conv-preview.missed{color:#D9534F;}
+.conv-badge{min-width:22px;height:22px;border-radius:11px;background:var(--cobalt);color:#fff;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+.streak-banner{border-radius:18px;padding:16px;background:linear-gradient(120deg,#E7F6EC 0%,#EAF1FF 100%);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.streak-text{font-weight:700;font-size:13.5px;}
+.new-match-btn{border:none;border-radius:999px;padding:8px 14px;background:var(--cobalt);color:#fff;font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);width:calc(100% - 40px);max-width:420px;background:var(--card);border-radius:22px;box-shadow:0 10px 30px rgba(24,36,73,.18);display:flex;padding:8px;gap:6px;}
+.nav-btn{flex:1;border:none;background:transparent;border-radius:16px;padding:10px 0;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--inkSoft);}
+.nav-btn.active{background:var(--cobalt);color:#fff;}
+.nav-label{font-size:11px;font-weight:700;}
+
+.screen{display:none;padding-bottom:120px;}
+.screen.active{display:block;}
 </style>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-<div id="root"></div>
+<div class="app">
 
-<script type="text/babel" data-presets="react">
-const { useState } = React;
-
-// ---------- Design tokens ----------
-const COLORS = {
-  cream: "#FBF3E4",
-  card: "#FFFFFF",
-  ink: "#182449",
-  inkSoft: "#5B6180",
-  cobalt: "#2A46D6",
-  cobaltDeep: "#1B32A6",
-  amber: "#F5A83C",
-  amberDeep: "#E8901A",
-  green: "#3FAE6B",
-  line: "#EFE6D4",
-};
-
-// ---------- Inline icon set (no external deps) ----------
-const Icon = ({ children, size = 18, color = "currentColor", fill = "none", viewBox = "0 0 24 24" }) => (
-  <svg width={size} height={size} viewBox={viewBox} fill={fill} stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    {children}
-  </svg>
-);
-const HomeIcon = (p) => <Icon {...p}><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></Icon>;
-const Gamepad2 = (p) => <Icon {...p}><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="11" r="1"/><rect x="2" y="6" width="20" height="12" rx="4"/></Icon>;
-const MessageCircle = (p) => <Icon {...p}><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 21l1.5-5.5A8.5 8.5 0 1 1 21 12Z"/></Icon>;
-const Search = (p) => <Icon {...p}><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></Icon>;
-const Video = (p) => <Icon {...p}><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></Icon>;
-const Mic = (p) => <Icon {...p}><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></Icon>;
-const MessageSquare = (p) => <Icon {...p}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></Icon>;
-const Star = (p) => <Icon {...p}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>;
-const ChevronDown = (p) => <Icon {...p}><polyline points="6 9 12 15 18 9"/></Icon>;
-const ArrowRight = (p) => <Icon {...p}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></Icon>;
-const Play = (p) => <Icon {...p}><polygon points="5 3 19 12 5 21 5 3"/></Icon>;
-const ExternalLink = (p) => <Icon {...p}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></Icon>;
-const PhoneMissed = (p) => <Icon {...p}><polyline points="23 1 17 1 17 7"/><line x1="16" y1="8" x2="23" y2="1"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></Icon>;
-const Zap = (p) => <Icon {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></Icon>;
-
-const partners = [
-  { name: "Sofia", flag: "🇲🇽" },
-  { name: "Diego", flag: "🇦🇷" },
-  { name: "Lucia", flag: "🇪🇸" },
-  { name: "Mateo", flag: "🇨🇴" },
-];
-
-const conversations = [
-  { name: "Sofia", flag: "🇲🇽", time: "2m ago", preview: "\u201c¿Cómo se dice homesick?\u201d", badge: 2, starred: false, missed: false },
-  { name: "Diego", flag: "🇦🇷", time: "1h ago", preview: "Voice call missed", badge: 0, starred: false, missed: true },
-  { name: "Lucia", flag: "🇪🇸", time: "Yesterday", preview: "\u201cGreat session today!\u201d", badge: 0, starred: true, missed: false },
-  { name: "Kenji", flag: "🇯🇵", time: "2d ago", preview: "\u201cLet's play Story Chain again\u201d", badge: 0, starred: false, missed: false },
-];
-
-const games = [
-  { title: "Word Race", difficulty: "MEDIUM", diffColor: COLORS.amber, rating: 4.9, online: "2,340 online", accent: COLORS.cobalt },
-  { title: "Picture Charades", difficulty: "EASY", diffColor: COLORS.green, rating: 4.7, online: "890 online", accent: COLORS.green },
-];
-
-const filters = ["All", "Vocabulary", "Speaking", "Listening"];
-const chatFilters = ["All", "Video", "Text", "Favorites"];
-
-function Avatar({ flag, size = 48 }) {
-  return (
-    <div style={{ width: size, height: size, borderRadius: "50%", background: "linear-gradient(135deg, #DCEAFE 0%, #F7E7C6 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: size * 0.45, flexShrink: 0, border: `2px solid ${COLORS.card}`, boxShadow: "0 0 0 1px " + COLORS.line }}>
-      {flag}
-    </div>
-  );
-}
-
-function TopBar({ title, subtitle }) {
-  return (
-    <div style={{ padding: "22px 20px 4px" }}>
-      {subtitle && <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: 0.3, color: COLORS.inkSoft, marginBottom: 2 }}>{subtitle}</div>}
-      {title && <div style={{ fontSize: 30, fontWeight: 800, color: COLORS.ink, letterSpacing: -0.5 }}>{title}</div>}
-    </div>
-  );
-}
-
-function Pill({ active, children, onClick, activeColor = COLORS.cobalt }) {
-  return (
-    <button onClick={onClick} style={{ padding: "9px 16px", borderRadius: 999, border: "none", fontSize: 13.5, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", background: active ? activeColor : COLORS.card, color: active ? "#fff" : COLORS.inkSoft, boxShadow: active ? `0 4px 10px ${activeColor}55` : "0 1px 2px rgba(24,36,73,0.06)", transition: "all .15s ease" }}>
-      {children}
-    </button>
-  );
-}
-
-function HomeScreen() {
-  const [mode, setMode] = useState("Video");
-  return (
-    <div>
-      <div style={{ padding: "20px 20px 0" }}>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: COLORS.card, borderRadius: 999, padding: "8px 14px 8px 8px", boxShadow: "0 1px 3px rgba(24,36,73,0.08)" }}>
-          <span style={{ width: 26, height: 26, borderRadius: "50%", background: COLORS.cobalt, color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>EN</span>
-          <span style={{ fontWeight: 700, fontSize: 14, color: COLORS.ink }}>English</span>
-          <ArrowRight size={14} color={COLORS.inkSoft} />
-          <span style={{ width: 26, height: 26, borderRadius: "50%", background: COLORS.amber, color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" }}>ES</span>
-          <ChevronDown size={16} color={COLORS.inkSoft} />
-        </div>
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div style="padding:20px 20px 0;">
+      <div class="lang-pill">
+        <span class="lang-badge" style="background:var(--cobalt);">EN</span>
+        <span style="font-weight:700;font-size:14px;">English</span>
+        <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B6180" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <span class="lang-badge" style="background:var(--amber);">ES</span>
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B6180" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
+    </div>
 
-      <div style={{ padding: "16px 20px 0" }}>
-        <div style={{ borderRadius: 22, padding: "22px 18px", background: "linear-gradient(120deg, #EAF1FF 0%, #FBF3E4 55%, #FDEBD2 100%)", position: "relative", overflow: "hidden", border: `1px solid ${COLORS.line}` }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-            <svg width="150" height="150" viewBox="0 0 150 150">
-              <circle cx="75" cy="75" r="64" fill="none" stroke="#E4DCC9" strokeWidth="12" />
-              <circle cx="75" cy="75" r="64" fill="none" stroke={COLORS.cobalt} strokeWidth="12" strokeDasharray={2 * Math.PI * 64} strokeDashoffset={2 * Math.PI * 64 * (1 - 13 / 20)} strokeLinecap="round" transform="rotate(-90 75 75)" />
-            </svg>
-            <div style={{ position: "absolute", textAlign: "center" }}>
-              <div style={{ fontSize: 30, fontWeight: 800, color: COLORS.ink, lineHeight: 1 }}>13/20</div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.inkSoft, marginTop: 4 }}>min today</div>
-            </div>
+    <div style="padding:16px 20px 0;">
+      <div class="progress-card">
+        <div class="ring-wrap">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="64" fill="none" stroke="#E4DCC9" stroke-width="12"/>
+            <circle cx="75" cy="75" r="64" fill="none" stroke="#2A46D6" stroke-width="12"
+              stroke-dasharray="402.12" stroke-dashoffset="140.74" stroke-linecap="round"
+              transform="rotate(-90 75 75)"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-num">13/20</div>
+            <div class="ring-label">min today</div>
           </div>
         </div>
       </div>
+    </div>
 
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, background: COLORS.card, padding: "7px 14px", borderRadius: 999, fontSize: 12.5, fontWeight: 600, color: COLORS.inkSoft, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: COLORS.green, display: "inline-block" }} />
-          1,284 learners live now
-        </div>
-      </div>
+    <div style="display:flex;justify-content:center;margin-top:14px;">
+      <div class="live-pill"><span class="dot"></span>1,284 learners live now</div>
+    </div>
 
-      <div style={{ padding: "16px 20px 0" }}>
-        <button style={{ width: "100%", border: "none", borderRadius: 18, padding: "16px 18px", background: `linear-gradient(135deg, ${COLORS.amber}, ${COLORS.amberDeep})`, display: "flex", alignItems: "center", gap: 14, cursor: "pointer", boxShadow: `0 8px 18px ${COLORS.amber}55` }}>
-          <span style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.9)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <Zap size={20} color={COLORS.amberDeep} fill={COLORS.amberDeep} />
-          </span>
-          <span style={{ textAlign: "left", flex: 1 }}>
-            <div style={{ fontWeight: 800, fontSize: 17, color: "#fff" }}>Match Now</div>
-            <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.9)", fontWeight: 600 }}>Find a partner in Spanish</div>
-          </span>
-          <ArrowRight size={20} color="#fff" />
+    <div style="padding:16px 20px 0;">
+      <button class="match-btn">
+        <span class="match-icon-circle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#E8901A" stroke="#E8901A" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </span>
+        <span class="match-text">
+          <div class="match-title">Match Now</div>
+          <div class="match-sub">Find a partner in Spanish</div>
+        </span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+
+    <div style="padding:14px 20px 0;">
+      <div class="mode-toggle" id="mode-toggle">
+        <button class="mode-btn active" data-mode="Video">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3"/></svg>
+          Video
+        </button>
+        <button class="mode-btn" data-mode="Voice">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+          Voice
+        </button>
+        <button class="mode-btn" data-mode="Text">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Text
         </button>
       </div>
+    </div>
 
-      <div style={{ padding: "14px 20px 0" }}>
-        <div style={{ display: "flex", background: COLORS.card, borderRadius: 14, padding: 4, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
-          {[{ key: "Video", icon: Video }, { key: "Voice", icon: Mic }, { key: "Text", icon: MessageSquare }].map(({ key, icon: Icon2 }) => (
-            <button key={key} onClick={() => setMode(key)} style={{ flex: 1, border: "none", borderRadius: 10, padding: "9px 0", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontWeight: 700, fontSize: 13.5, cursor: "pointer", background: mode === key ? COLORS.cream : "transparent", color: mode === key ? COLORS.ink : COLORS.inkSoft }}>
-              <Icon2 size={15} /> {key}
+    <div style="padding:22px 20px 0;">
+      <div class="section-row">
+        <span class="section-title">Recent Partners</span>
+        <span class="see-all">See all</span>
+      </div>
+      <div class="partners-scroll">
+        <div class="partner"><div class="avatar">🇲🇽</div><div class="partner-name">Sofia</div></div>
+        <div class="partner"><div class="avatar">🇦🇷</div><div class="partner-name">Diego</div></div>
+        <div class="partner"><div class="avatar">🇪🇸</div><div class="partner-name">Lucia</div></div>
+        <div class="partner"><div class="avatar">🇨🇴</div><div class="partner-name">Mateo</div></div>
+        <div class="partner"><div class="say-hi-circle">👋</div><div class="say-hi-label">Say hi</div></div>
+      </div>
+    </div>
+
+    <div style="padding:22px 20px 0;">
+      <div class="section-title" style="margin-bottom:12px;">Suggested for you</div>
+      <div class="suggested-row">
+        <div class="suggested-card">
+          <span class="tag tag-green">POPULAR</span>
+          <div class="suggested-text">Quick &amp; playful session</div>
+        </div>
+        <div class="suggested-card">
+          <span class="tag tag-blue">LIVE</span>
+          <div class="suggested-text">12 talking now</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAMES -->
+  <div class="screen" id="screen-games">
+    <div class="topbar"><div class="topbar-title">Games</div></div>
+
+    <div style="padding:14px 20px 0;">
+      <div class="search-box">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5B6180" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search games...
+      </div>
+    </div>
+
+    <div style="padding:14px 20px 0;">
+      <div class="pills-row" id="game-filters">
+        <button class="pill active" data-f="All">All</button>
+        <button class="pill" data-f="Vocabulary">Vocabulary</button>
+        <button class="pill" data-f="Speaking">Speaking</button>
+        <button class="pill" data-f="Listening">Listening</button>
+      </div>
+    </div>
+
+    <div style="padding:16px 20px 0;">
+      <div class="tourney-card">
+        <div class="tourney-badges">
+          <span class="badge-weekend">THIS WEEKEND</span>
+          <span class="live-soon"><span class="live-dot"></span>Live soon</span>
+        </div>
+        <div class="tourney-title">Weekend Tournament:<br>Word Race</div>
+        <div class="tourney-sub">Win 500 XP · Starts Saturday at 7 PM</div>
+        <button class="tourney-btn">View tournament
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2A46D6" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:22px 20px 12px;">
+      <span class="section-title" style="font-size:18px;">Jump in</span>
+      <span style="font-size:13px;color:var(--inkSoft);font-weight:600;">5 games</span>
+    </div>
+
+    <div style="padding:0 20px;">
+      <div class="games-grid">
+        <div class="game-card" style="border-left:4px solid var(--cobalt);">
+          <div class="game-thumb">
+            <span class="online-tag"><span class="dot"></span>2,340 online</span>
+          </div>
+          <div class="game-body">
+            <div class="game-head">
+              <div class="game-name">Word Race</div>
+              <span class="diff-tag" style="background:var(--amber);">MEDIUM</span>
+            </div>
+            <div class="rating-row">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F5A83C" stroke="#F5A83C"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.9
+            </div>
+            <button class="play-btn">Play
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </button>
-          ))}
+          </div>
         </div>
-      </div>
-
-      <div style={{ padding: "22px 20px 0" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <span style={{ fontWeight: 800, fontSize: 16, color: COLORS.ink }}>Recent Partners</span>
-          <span style={{ fontWeight: 700, fontSize: 13, color: COLORS.cobalt }}>See all</span>
-        </div>
-        <div style={{ display: "flex", gap: 16, overflowX: "auto", paddingBottom: 4 }}>
-          {partners.map((p) => (
-            <div key={p.name} style={{ textAlign: "center", flexShrink: 0 }}>
-              <Avatar flag={p.flag} />
-              <div style={{ fontSize: 11.5, fontWeight: 700, color: COLORS.ink, marginTop: 6 }}>{p.name}</div>
+        <div class="game-card" style="border-left:4px solid var(--green);">
+          <div class="game-thumb">
+            <span class="online-tag"><span class="dot"></span>890 online</span>
+          </div>
+          <div class="game-body">
+            <div class="game-head">
+              <div class="game-name">Picture Charades</div>
+              <span class="diff-tag" style="background:var(--green);">EASY</span>
             </div>
-          ))}
-          <div style={{ textAlign: "center", flexShrink: 0 }}>
-            <div style={{ width: 48, height: 48, borderRadius: "50%", border: `2px dashed ${COLORS.cobalt}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>👋</div>
-            <div style={{ fontSize: 11.5, fontWeight: 700, color: COLORS.cobalt, marginTop: 6 }}>Say hi</div>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ padding: "22px 20px 120px" }}>
-        <div style={{ fontWeight: 800, fontSize: 16, color: COLORS.ink, marginBottom: 12 }}>Suggested for you</div>
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ flex: 1, background: COLORS.card, borderRadius: 16, padding: 14, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
-            <span style={{ fontSize: 10, fontWeight: 800, background: "#E7F6EC", color: COLORS.green, padding: "3px 8px", borderRadius: 999 }}>POPULAR</span>
-            <div style={{ fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginTop: 10 }}>Quick & playful session</div>
-          </div>
-          <div style={{ flex: 1, background: COLORS.card, borderRadius: 16, padding: 14, boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
-            <span style={{ fontSize: 10, fontWeight: 800, background: "#EAF1FF", color: COLORS.cobalt, padding: "3px 8px", borderRadius: 999 }}>LIVE</span>
-            <div style={{ fontWeight: 700, fontSize: 13.5, color: COLORS.ink, marginTop: 10 }}>12 talking now</div>
+            <div class="rating-row">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#F5A83C" stroke="#F5A83C"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              4.7
+            </div>
+            <button class="play-btn">Play
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
           </div>
         </div>
       </div>
     </div>
-  );
-}
+  </div>
 
-function GamesScreen() {
-  const [filter, setFilter] = useState("All");
-  return (
-    <div>
-      <TopBar title="Games" />
-      <div style={{ padding: "14px 20px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, background: COLORS.card, borderRadius: 14, padding: "12px 14px", boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
-          <Search size={17} color={COLORS.inkSoft} />
-          <span style={{ color: COLORS.inkSoft, fontSize: 14, fontWeight: 500 }}>Search games...</span>
-        </div>
-      </div>
+  <!-- CHATS -->
+  <div class="screen" id="screen-chats">
+    <div class="topbar">
+      <div class="topbar-sub">Your conversation corner</div>
+      <div class="topbar-title">Chats</div>
+    </div>
 
-      <div style={{ display: "flex", gap: 8, padding: "14px 20px 0", overflowX: "auto" }}>
-        {filters.map((f) => (
-          <Pill key={f} active={filter === f} onClick={() => setFilter(f)}>{f}</Pill>
-        ))}
-      </div>
-
-      <div style={{ padding: "16px 20px 0" }}>
-        <div style={{ borderRadius: 20, padding: 20, background: `linear-gradient(135deg, ${COLORS.cobalt}, ${COLORS.cobaltDeep})`, position: "relative", overflow: "hidden" }}>
-          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <span style={{ background: COLORS.amber, color: "#fff", fontSize: 10.5, fontWeight: 800, padding: "4px 10px", borderRadius: 999 }}>THIS WEEKEND</span>
-            <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 600, color: "#DCE5FF" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8FE3B0", display: "inline-block" }} />
-              Live soon
-            </span>
-          </div>
-          <div style={{ fontWeight: 800, fontSize: 21, color: "#fff", marginTop: 10, lineHeight: 1.25 }}>Weekend Tournament:<br />Word Race</div>
-          <div style={{ fontSize: 13, color: "#C9D6FF", marginTop: 8, fontWeight: 500 }}>Win 500 XP · Starts Saturday at 7 PM</div>
-          <button style={{ marginTop: 16, background: "#fff", border: "none", borderRadius: 999, padding: "10px 18px", fontWeight: 700, fontSize: 13.5, color: COLORS.cobalt, display: "flex", alignItems: "center", gap: 6, cursor: "pointer" }}>
-            View tournament <ExternalLink size={13} />
-          </button>
-        </div>
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "22px 20px 12px" }}>
-        <span style={{ fontWeight: 800, fontSize: 18, color: COLORS.ink }}>Jump in</span>
-        <span style={{ fontSize: 13, color: COLORS.inkSoft, fontWeight: 600 }}>5 games</span>
-      </div>
-
-      <div style={{ padding: "0 20px 120px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        {games.map((g) => (
-          <div key={g.title} style={{ background: COLORS.card, borderRadius: 18, overflow: "hidden", borderLeft: `4px solid ${g.accent}`, boxShadow: "0 1px 4px rgba(24,36,73,0.07)" }}>
-            <div style={{ height: 90, background: "linear-gradient(135deg, #DCEAFE, #F4EAD0)", position: "relative" }}>
-              <span style={{ position: "absolute", top: 8, left: 8, background: "rgba(255,255,255,0.92)", fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 999, display: "flex", alignItems: "center", gap: 4, color: COLORS.ink }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: COLORS.green, display: "inline-block" }} />
-                {g.online}
-              </span>
-            </div>
-            <div style={{ padding: "12px 12px 14px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <div style={{ fontWeight: 800, fontSize: 14.5, color: COLORS.ink, lineHeight: 1.2 }}>{g.title}</div>
-                <span style={{ fontSize: 9.5, fontWeight: 800, color: "#fff", background: g.diffColor, padding: "3px 7px", borderRadius: 999, whiteSpace: "nowrap", marginLeft: 6 }}>{g.difficulty}</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 6 }}>
-                <Star size={12} fill={COLORS.amber} color={COLORS.amber} />
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: COLORS.inkSoft }}>{g.rating}</span>
-              </div>
-              <button style={{ width: "100%", marginTop: 10, border: "none", borderRadius: 12, padding: "9px 0", background: COLORS.cobalt, color: "#fff", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer" }}>
-                Play <Play size={12} fill="#fff" />
-              </button>
-            </div>
-          </div>
-        ))}
+    <div style="padding:16px 20px 0;">
+      <div class="chat-filters" id="chat-filters">
+        <button class="chat-filter-btn active" data-f="All">All</button>
+        <button class="chat-filter-btn" data-f="Video">Video</button>
+        <button class="chat-filter-btn" data-f="Text">Text</button>
+        <button class="chat-filter-btn" data-f="Favorites" style="flex:1.3;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Favorites
+        </button>
       </div>
     </div>
-  );
-}
 
-function ChatsScreen() {
-  const [filter, setFilter] = useState("All");
-  return (
-    <div>
-      <TopBar subtitle="Your conversation corner" title="Chats" />
+    <div style="padding:14px 20px 0;">
+      <div class="search-box">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#5B6180" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search conversations
+      </div>
+    </div>
 
-      <div style={{ display: "flex", gap: 6, padding: "16px 20px 0" }}>
-        {chatFilters.map((f) => (
-          <button key={f} onClick={() => setFilter(f)} style={{ flex: f === "Favorites" ? "1.3" : 1, border: "none", borderRadius: 12, padding: "9px 6px", fontWeight: 700, fontSize: 12.5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4, background: filter === f ? COLORS.card : "transparent", color: filter === f ? COLORS.ink : COLORS.inkSoft, boxShadow: filter === f ? "0 1px 3px rgba(24,36,73,0.08)" : "none" }}>
-            {f === "Favorites" && <Star size={12} />} {f}
-          </button>
-        ))}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 20px 10px;">
+      <span class="section-title">Recent conversations</span>
+      <span class="active-badge">4 active</span>
+    </div>
+
+    <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px;">
+      <div class="conv-item highlight">
+        <div class="avatar">🇲🇽</div>
+        <div class="conv-main">
+          <div class="conv-top"><span class="conv-name">Sofia 🇲🇽</span><span class="conv-time">2m ago</span></div>
+          <div class="conv-preview">"¿Cómo se dice homesick?"</div>
+        </div>
+        <span class="conv-badge">2</span>
       </div>
 
-      <div style={{ padding: "14px 20px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, background: COLORS.card, borderRadius: 14, padding: "12px 14px", boxShadow: "0 1px 3px rgba(24,36,73,0.06)" }}>
-          <Search size={17} color={COLORS.inkSoft} />
-          <span style={{ color: COLORS.inkSoft, fontSize: 14, fontWeight: 500 }}>Search conversations</span>
+      <div class="conv-item">
+        <div class="avatar">🇦🇷</div>
+        <div class="conv-main">
+          <div class="conv-top"><span class="conv-name">Diego 🇦🇷</span><span class="conv-time">1h ago</span></div>
+          <div class="conv-preview missed">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#D9534F" stroke-width="2"><polyline points="23 1 17 1 17 7"/><line x1="16" y1="8" x2="23" y2="1"/><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Voice call missed
+          </div>
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 20px 10px" }}>
-        <span style={{ fontWeight: 800, fontSize: 16, color: COLORS.ink }}>Recent conversations</span>
-        <span style={{ fontSize: 11.5, fontWeight: 700, color: COLORS.green, background: "#E7F6EC", padding: "3px 9px", borderRadius: 999 }}>4 active</span>
+      <div class="conv-item">
+        <div class="avatar">🇪🇸</div>
+        <div class="conv-main">
+          <div class="conv-top"><span class="conv-name">Lucia 🇪🇸</span><span class="conv-time">Yesterday</span></div>
+          <div class="conv-preview">"Great session today!"</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#F5A83C" stroke="#F5A83C"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       </div>
 
-      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {conversations.map((c) => (
-          <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 12, background: COLORS.card, borderRadius: 16, padding: "12px 14px", boxShadow: c.name === "Sofia" ? `0 0 0 2px ${COLORS.cobalt}, 0 4px 10px rgba(42,70,214,0.15)` : "0 1px 3px rgba(24,36,73,0.06)" }}>
-            <Avatar flag={c.flag} />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontWeight: 800, fontSize: 14.5, color: COLORS.ink }}>{c.name} {c.flag}</span>
-                <span style={{ fontSize: 11.5, color: COLORS.inkSoft, fontWeight: 600 }}>{c.time}</span>
-              </div>
-              <div style={{ fontSize: 13, color: c.missed ? "#D9534F" : COLORS.inkSoft, marginTop: 3, fontWeight: 500, display: "flex", alignItems: "center", gap: 5, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {c.missed && <PhoneMissed size={12} />}
-                {c.preview}
-              </div>
-            </div>
-            {c.badge > 0 && (
-              <span style={{ minWidth: 22, height: 22, borderRadius: 11, background: COLORS.cobalt, color: "#fff", fontSize: 11.5, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{c.badge}</span>
-            )}
-            {c.starred && <Star size={16} color={COLORS.amber} fill={COLORS.amber} />}
-          </div>
-        ))}
-      </div>
-
-      <div style={{ padding: "18px 20px 120px" }}>
-        <div style={{ borderRadius: 18, padding: "16px 16px", background: "linear-gradient(120deg, #E7F6EC 0%, #EAF1FF 100%)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ fontWeight: 700, fontSize: 13.5, color: COLORS.ink }}>Keep the streak chatty</span>
-          <button style={{ border: "none", borderRadius: 999, padding: "8px 14px", background: COLORS.cobalt, color: "#fff", fontWeight: 800, fontSize: 12.5, display: "flex", alignItems: "center", gap: 5, cursor: "pointer", whiteSpace: "nowrap" }}>
-            <Zap size={13} fill="#fff" /> New Match
-          </button>
+      <div class="conv-item">
+        <div class="avatar">🇯🇵</div>
+        <div class="conv-main">
+          <div class="conv-top"><span class="conv-name">Kenji 🇯🇵</span><span class="conv-time">2d ago</span></div>
+          <div class="conv-preview">"Let's play Story Chain again"</div>
         </div>
       </div>
     </div>
-  );
-}
 
-function App() {
-  const [tab, setTab] = useState("Home");
-  const tabs = [
-    { key: "Home", icon: HomeIcon, screen: <HomeScreen /> },
-    { key: "Games", icon: Gamepad2, screen: <GamesScreen /> },
-    { key: "Chats", icon: MessageCircle, screen: <ChatsScreen /> },
-  ];
-  const current = tabs.find((t) => t.key === tab);
-
-  return (
-    <div style={{ minHeight: "100vh", background: COLORS.cream, display: "flex", justifyContent: "center", fontFamily: "'Nunito', 'Segoe UI', system-ui, -apple-system, sans-serif" }}>
-      <div style={{ width: "100%", maxWidth: 460, minHeight: "100vh", position: "relative", background: COLORS.cream }}>
-        {current.screen}
-        <div style={{ position: "fixed", bottom: 18, left: "50%", transform: "translateX(-50%)", width: "calc(100% - 40px)", maxWidth: 420, background: COLORS.card, borderRadius: 22, boxShadow: "0 10px 30px rgba(24,36,73,0.18)", display: "flex", padding: 8, gap: 6 }}>
-          {tabs.map(({ key, icon: TabIcon }) => {
-            const active = tab === key;
-            return (
-              <button key={key} onClick={() => setTab(key)} style={{ flex: 1, border: "none", background: active ? COLORS.cobalt : "transparent", borderRadius: 16, padding: "10px 0", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, cursor: "pointer", transition: "all .15s ease" }}>
-                <TabIcon size={19} color={active ? "#fff" : COLORS.inkSoft} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: active ? "#fff" : COLORS.inkSoft }}>{key}</span>
-              </button>
-            );
-          })}
-        </div>
+    <div style="padding:18px 20px 0;">
+      <div class="streak-banner">
+        <span class="streak-text">Keep the streak chatty</span>
+        <button class="new-match-btn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          New Match
+        </button>
       </div>
     </div>
-  );
-}
+  </div>
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-</script>
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" id="bottom-nav">
+    <button class="nav-btn active" data-screen="home">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5 12 3l9 6.5"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+      <span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" data-screen="games">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="11" r="1"/><rect x="2" y="6" width="20" height="12" rx="4"/></svg>
+      <span class="nav-label">Games</span>
+    </button>
+    <button class="nav-btn" data-screen="chats">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-4-1L3 21l1.5-5.5A8.5 8.5 0 1 1 21 12Z"/></svg>
+      <span class="nav-label">Chats</span>
+    </button>
+  </div>
+</div>
 
 <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("sw.js").catch(() => {});
-    });
-  }
+// Tab navigation
+document.getElementById('bottom-nav').addEventListener('click', function(e){
+  var btn = e.target.closest('.nav-btn');
+  if(!btn) return;
+  var target = btn.getAttribute('data-screen');
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen-' + target).classList.add('active');
+  window.scrollTo(0,0);
+});
+
+// Home mode toggle
+document.getElementById('mode-toggle').addEventListener('click', function(e){
+  var btn = e.target.closest('.mode-btn');
+  if(!btn) return;
+  document.querySelectorAll('#mode-toggle .mode-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+});
+
+// Games filter pills
+document.getElementById('game-filters').addEventListener('click', function(e){
+  var btn = e.target.closest('.pill');
+  if(!btn) return;
+  document.querySelectorAll('#game-filters .pill').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+});
+
+// Chats filter
+document.getElementById('chat-filters').addEventListener('click', function(e){
+  var btn = e.target.closest('.chat-filter-btn');
+  if(!btn) return;
+  document.querySelectorAll('#chat-filters .chat-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+});
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").catch(function(){});
+  });
+}
 </script>
 </body>
 </html>
