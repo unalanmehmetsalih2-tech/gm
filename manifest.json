@@ -5,9 +5,9 @@
   "display": "standalone",
   "name": "Dil Degisimi",
   "orientation": "any",
-  "scope": "/",
+  "scope": "/gm/",
   "short_name": "DilApp",
-  "start_url": "/",
+  "start_url": "/gm/",
   "theme_color": "#2A46D6",
   "icons": [
     {
