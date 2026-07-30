@@ -1,0 +1,27 @@
+{
+  "background_color": "#ffffff",
+  "description": "Dil pratiği yapmak için sohbet ve oyun uygulaması",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Dil Degisimi",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "DilApp",
+  "start_url": "/",
+  "theme_color": "#2A46D6",
+  "icons": [
+    {
+      "src": "https://unalanmehmetsalih2-tech.github.io/gm/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "isSquare": true,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 192,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": true
+    }
+  ]
+}
