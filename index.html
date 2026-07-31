@@ -119,6 +119,8 @@ input{font-family:inherit;}
 .nav-label{font-size:11px;font-weight:700;}
 
 .screen{display:none;padding-bottom:120px;}
+#screen-chat-detail.screen{padding-bottom:0;}
+#screen-wordrace.screen,#screen-wordrace-result.screen,#screen-charades.screen,#screen-charades-result.screen{padding-bottom:24px;}
 .screen.active{display:block;}
 
 /* Chat detail */
@@ -134,7 +136,7 @@ input{font-family:inherit;}
 .call-iframe-wrap{flex:1;position:relative;}
 .call-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 .call-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;gap:14px;}
-.msg-list{padding:16px;display:flex;flex-direction:column;gap:10px;min-height:50vh;}
+.msg-list{padding:16px 16px 80px;display:flex;flex-direction:column;gap:10px;min-height:50vh;}
 .msg-bubble{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.35;}
 .msg-them{align-self:flex-start;background:var(--card);color:var(--ink);border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(24,36,73,.06);}
 .msg-me{align-self:flex-end;background:var(--cobalt);color:#fff;border-bottom-right-radius:4px;}
@@ -539,6 +541,8 @@ function save(){
 var screens = document.querySelectorAll(".screen");
 var navBtns = document.querySelectorAll(".nav-btn[data-nav]");
 
+var FULLSCREEN_SCREENS = ["chat-detail","wordrace","wordrace-result","charades","charades-result"];
+
 function showScreen(name){
   screens.forEach(function(s){ s.classList.remove("active"); });
   var el = document.getElementById("screen-" + name);
@@ -546,6 +550,12 @@ function showScreen(name){
   navBtns.forEach(function(b){
     b.classList.toggle("active", b.getAttribute("data-nav") === name);
   });
+  var bottomNav = document.getElementById("bottom-nav");
+  if(FULLSCREEN_SCREENS.indexOf(name) !== -1){
+    bottomNav.classList.add("hidden");
+  } else {
+    bottomNav.classList.remove("hidden");
+  }
   window.scrollTo(0,0);
 }
 
@@ -973,4 +983,4 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 </body>
-  </html>
+</html>
