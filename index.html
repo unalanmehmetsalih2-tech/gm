@@ -136,6 +136,24 @@ input{font-family:inherit;}
 .call-iframe-wrap{flex:1;position:relative;}
 .call-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
 .call-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;gap:14px;}
+
+/* Login gate */
+.login-screen{position:fixed;inset:0;z-index:500;background:linear-gradient(150deg,var(--cobalt) 0%,var(--cobaltDeep) 60%,#101a4d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center;}
+.login-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:36px 26px;max-width:340px;width:100%;}
+.login-emoji{font-size:44px;margin-bottom:10px;}
+.login-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;}
+.login-sub{font-size:13.5px;color:#D7DEFB;margin-bottom:28px;line-height:1.5;}
+.google-btn{width:100%;border:none;border-radius:14px;padding:14px 16px;background:#fff;color:#182449;font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:12px;}
+.google-btn:disabled{opacity:.6;}
+.login-error{color:#FFD6D6;font-size:12.5px;font-weight:600;margin-top:14px;min-height:16px;}
+.login-loading-wrap{color:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.login-loading-wrap .spinner{border-color:rgba(255,255,255,.25);border-top-color:#fff;}
+
+/* Profile chip on Home */
+.profile-chip{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:999px;padding:6px 12px 6px 6px;box-shadow:0 1px 3px rgba(24,36,73,.08);}
+.profile-chip img{width:28px;height:28px;border-radius:50%;object-fit:cover;}
+.profile-chip-name{font-weight:700;font-size:13px;color:var(--ink);}
+.logout-btn{border:none;background:none;color:var(--inkSoft);display:flex;align-items:center;justify-content:center;padding:4px;margin-left:2px;}
 .msg-list{padding:16px 16px 80px;display:flex;flex-direction:column;gap:10px;min-height:50vh;}
 .msg-bubble{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.35;}
 .msg-them{align-self:flex-start;background:var(--card);color:var(--ink);border-bottom-left-radius:4px;box-shadow:0 1px 3px rgba(24,36,73,.06);}
@@ -186,16 +204,39 @@ input{font-family:inherit;}
 </style>
 </head>
 <body>
+<div class="login-screen" id="login-screen">
+  <div class="login-loading-wrap" id="login-loading">
+    <div class="spinner"></div>
+    <div>Yükleniyor...</div>
+  </div>
+  <div class="login-card hidden" id="login-card">
+    <div class="login-emoji">🌎</div>
+    <div class="login-title">Dil Değişimi</div>
+    <div class="login-sub">Devam etmek için Google hesabınla giriş yap</div>
+    <button class="google-btn" id="google-signin-btn">
+      <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.1 0-11.2-4.1-12.9-9.6-.4-1.1-.6-2.3-.6-3.4s.2-2.3.6-3.4C12.8 13.1 17.9 9 24 9c3.1 0 5.9 1.1 8.1 3l6-6C34.5 2.6 29.5 1 24 1 11.8 1 2 10.8 2 23s9.8 22 22 22c11 0 21-8 21-22 0-1.5-.2-2.5-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.1l6.6 4.8C14.6 15.1 18.9 13 24 13c3.1 0 5.9 1.1 8.1 3l6-6C34.5 6.6 29.5 5 24 5 16.3 5 9.7 9.1 6.3 14.1z"/><path fill="#4CAF50" d="M24 45c5.2 0 10-1.7 13.7-4.6l-6.3-5.3C29.4 36.7 26.8 37.5 24 37.5c-5.3 0-9.8-3.4-11.4-8.1l-6.5 5C9.6 40.7 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.3 5.3C40.5 36.1 44 30.3 44 23c0-1.5-.2-2.5-.4-2.5z"/></svg>
+      Google ile Giriş Yap
+    </button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
 <div class="app" id="app">
 
   <!-- HOME -->
   <div class="screen active" id="screen-home">
-    <div style="padding:20px 20px 0;">
+    <div style="padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;gap:10px;">
       <div class="lang-pill">
         <span class="lang-badge" style="background:var(--cobalt);">EN</span>
         <span style="font-weight:700;font-size:14px;">English</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B6180" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         <span class="lang-badge" style="background:var(--amber);">ES</span>
+      </div>
+      <div class="profile-chip hidden" id="user-profile-chip">
+        <img id="profile-photo" src="icon-192.png" alt="" />
+        <span class="profile-chip-name" id="profile-name"></span>
+        <button class="logout-btn" id="logout-btn" title="Çıkış yap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
       </div>
     </div>
 
@@ -985,6 +1026,65 @@ if ("serviceWorker" in navigator) {
   });
 }
 })();
+</script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAgYc5htzDStz48Fb9vFc-9RivGrBd611M",
+    authDomain: "omelang-83f60.firebaseapp.com",
+    projectId: "omelang-83f60",
+    storageBucket: "omelang-83f60.firebasestorage.app",
+    messagingSenderId: "335490595195",
+    appId: "1:335490595195:web:4ccb4b5809cc3c0b60a5de"
+  };
+
+  const fbApp = initializeApp(firebaseConfig);
+  const auth = getAuth(fbApp);
+  const provider = new GoogleAuthProvider();
+
+  const loginScreen = document.getElementById("login-screen");
+  const loginLoading = document.getElementById("login-loading");
+  const loginCard = document.getElementById("login-card");
+  const loginBtn = document.getElementById("google-signin-btn");
+  const loginError = document.getElementById("login-error");
+  const profileChip = document.getElementById("user-profile-chip");
+  const profileName = document.getElementById("profile-name");
+  const profilePhoto = document.getElementById("profile-photo");
+  const logoutBtn = document.getElementById("logout-btn");
+
+  loginBtn.addEventListener("click", async function(){
+    loginError.textContent = "";
+    loginBtn.disabled = true;
+    loginBtn.textContent = "Giriş yapılıyor...";
+    try{
+      await signInWithPopup(auth, provider);
+    }catch(err){
+      loginError.textContent = "Giriş başarısız oldu, tekrar dene.";
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<svg width="19" height="19" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.1 0-11.2-4.1-12.9-9.6-.4-1.1-.6-2.3-.6-3.4s.2-2.3.6-3.4C12.8 13.1 17.9 9 24 9c3.1 0 5.9 1.1 8.1 3l6-6C34.5 2.6 29.5 1 24 1 11.8 1 2 10.8 2 23s9.8 22 22 22c11 0 21-8 21-22 0-1.5-.2-2.5-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.1l6.6 4.8C14.6 15.1 18.9 13 24 13c3.1 0 5.9 1.1 8.1 3l6-6C34.5 6.6 29.5 5 24 5 16.3 5 9.7 9.1 6.3 14.1z"/><path fill="#4CAF50" d="M24 45c5.2 0 10-1.7 13.7-4.6l-6.3-5.3C29.4 36.7 26.8 37.5 24 37.5c-5.3 0-9.8-3.4-11.4-8.1l-6.5 5C9.6 40.7 16.3 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.3 5.3C40.5 36.1 44 30.3 44 23c0-1.5-.2-2.5-.4-2.5z"/></svg> Google ile Giriş Yap';
+    }
+  });
+
+  logoutBtn.addEventListener("click", function(){
+    signOut(auth);
+  });
+
+  onAuthStateChanged(auth, function(user){
+    loginLoading.classList.add("hidden");
+    loginCard.classList.remove("hidden");
+    if(user){
+      loginScreen.classList.add("hidden");
+      profileChip.classList.remove("hidden");
+      profileName.textContent = user.displayName || (user.email ? user.email.split("@")[0] : "Kullanıcı");
+      profilePhoto.src = user.photoURL || "icon-192.png";
+    } else {
+      loginScreen.classList.remove("hidden");
+      profileChip.classList.add("hidden");
+    }
+  });
 </script>
 </body>
 </html>
